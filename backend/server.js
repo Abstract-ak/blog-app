@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
-const connectDB = require("./config/db");
+const connectDB = require("./src/config/db");
 
 dotenv.config();
 
