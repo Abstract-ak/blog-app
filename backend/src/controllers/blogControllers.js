@@ -33,6 +33,13 @@ const getBlogs = async (req, res) => {
     /*  Counts the total number of blog documents in the collection.
         This is used to calculate the total number of pages.
     */
+    res.status(200).json({
+      success: true,
+      data: blogs,
+      total,
+      page: parseInt(page),
+      pages: Math.ceil(total / limit),
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: "Server error" });
   }
@@ -65,5 +72,47 @@ const createBlog = async (req, res) => {
 // @desc    Update a blog
 // @route   PUT /api/blogs/:id
 // @access  Public
+const updateBlog = async (req, res) => {
+  const { id } = req.params;
+  const { title, content, author } = req.body;
 
-module.exports = { getBlogs, createBlog };
+  try {
+    const blog = await Blog.findById(id);
+
+    if (!blog) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Blog not found" });
+    }
+
+    blog.title = title || blog.title;
+    blog.content = content || blog.content;
+    blog.author = author || blog.author;
+
+    const updateBlog = await blog.save();
+    res.status(200).json({ success: true, data: updateBlog });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
+
+const deleteBlog = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const blog = await Blog.findById(id);
+
+    if (!blog) {
+      return res.status(404).json({
+        success: false,
+        message: "Blog not found",
+      });
+    }
+    await blog.remove();
+    res.status(200).json({ success: true, message: "Blog Deleted" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
+
+module.exports = { getBlogs, createBlog, updateBlog, deleteBlog };
