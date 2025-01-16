@@ -1,19 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-const BlogForm = () => {
+const BlogForm = ({ currentBlog, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
     title: "",
     content: "",
     author: "",
   });
 
+  useEffect(() => {
+    if (currentBlog) setFormData(currentBlog);
+  }, [currentBlog]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit(formData);
+  };
+
   return (
-    <form className="blog-form">
+    <form onSubmit={handleSubmit} className="blog-form">
       <input
         type="text"
         name="title"
@@ -38,8 +47,10 @@ const BlogForm = () => {
         required
       />
 
-      <button type="submit"></button>
-      <button type="button">Cancel</button>
+      <button type="submit">{currentBlog ? "Update" : "Create"}</button>
+      <button type="button" onClick={onCancel}>
+        Cancel
+      </button>
     </form>
   );
 };
