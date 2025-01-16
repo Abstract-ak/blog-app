@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const connectDB = require("./src/config/db");
 const blogRoutes = require("./src/routes/blogRoutes");
 const { errorHandler } = require("./src/middleware/errorHandler");
-
+const cors = require('cors')
 dotenv.config();
 
 //  Database connection
@@ -15,6 +15,7 @@ const app = express();
 
 //Middleware config.
 app.use(express.json());
+app.use(cors());
 
 //  Routes
 app.use("/api/blogs", blogRoutes);

@@ -1,34 +1,30 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+import { useEffect, useState } from "react";
+
+import "./style.css";
+import { fetchBlogs } from "./api";
+import BlogList from "./components/BlogList";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [blogs, setBlogs] = useState([]);
+  const [page, setPage] = useState(1);
+  const [pages, setPages] = useState(1);
+
+  const loadBlogs = async () => {
+    const { data } = await fetchBlogs(page, 5);
+    console.log("fetch data", data);
+    setBlogs(data.data);
+    setPages(data.pages);
+  };
+
+  useEffect(() => {
+    loadBlogs();
+  }, [page]);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className="app">
+      <h1>Blog Management</h1>
+      <BlogList blogs={blogs} />
+    </div>
   );
 }
 
