@@ -98,6 +98,7 @@ const updateBlog = async (req, res) => {
 
 const deleteBlog = async (req, res) => {
   const { id } = req.params;
+  // console.log("delete id", id);
 
   try {
     const blog = await Blog.findById(id);
@@ -108,7 +109,16 @@ const deleteBlog = async (req, res) => {
         message: "Blog not found",
       });
     }
-    await blog.remove();
+    // await blog.remove();
+    // Delete the blog
+    const result = await Blog.deleteOne({ _id: id });
+    console.log("Delete Result:", result);
+
+    if (result.deletedCount === 0) {
+      return res
+        .status(500)
+        .json({ success: false, message: "Failed to delete blog" });
+    }
     res.status(200).json({ success: true, message: "Blog Deleted" });
   } catch (error) {
     res.status(500).json({ success: false, message: "Server Error" });
