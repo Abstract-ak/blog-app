@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 
 import "./style.css";
-import { createBlog, fetchBlogs, updateBlog } from "./api";
+import { createBlog, deleteBlog, fetchBlogs, updateBlog } from "./api";
 import BlogList from "./components/BlogList";
 import BlogForm from "./components/BlogForm";
+import Pagination from "./components/Pagination";
 
 function App() {
   const [blogs, setBlogs] = useState([]);
@@ -32,6 +33,11 @@ function App() {
     loadBlogs();
   };
 
+  const handleDelete = async (id) => {
+    await deleteBlog(id);
+    loadBlogs();
+  };
+
   return (
     <div className="app">
       <h1>Blog Management</h1>
@@ -40,7 +46,12 @@ function App() {
         onSubmit={handleSubmit}
         onCancel={() => setCurrentBlog(null)}
       />
-      <BlogList blogs={blogs} />
+      <BlogList
+        blogs={blogs}
+        onEdit={(blog) => setCurrentBlog(blog)}
+        onDelete={handleDelete}
+      />
+      <Pagination page={page} pages={pages} onPageChange={setPage} />
     </div>
   );
 }
